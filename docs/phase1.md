@@ -6,7 +6,12 @@
 
 ## 🎯 Phase 1 Overview
 
-This phase establishes the technical foundation needed for the 3 core demo scenarios. Focus on getting basic components working rather than perfection.
+This phase establishes the technical foundation needed for the 3 core demo scenarios:
+1. **Voice Command Processing** - "eMCeeP, move the keynote from 2 PM to 3 PM"
+2. **Attendee Q&A** - "What's the WiFi password?"
+3. **Smart Escalation** - Detecting when organizer attention is needed
+
+Focus on getting basic components working rather than perfection.
 
 ## 📋 Setup Tasks
 
@@ -15,242 +20,578 @@ This phase establishes the technical foundation needed for the 3 core demo scena
   ```bash
   python -m venv .venv
   source .venv/bin/activate
-  pip install langflow mistralai twilio requests
+  pip install langflow mistralai twilio requests flask fastapi
   ```
-- [ ] **Create project directory structure**
+- [x] **Create project directory structure**
   ```bash
-  mkdir emceep-demo
-  cd emceep-demo
-  mkdir data flows
+  mkdir -p flows data scripts
   ```
 - [ ] **Set up environment variables**
+  Create `.env` file:
   ```bash
-  export MISTRAL_API_KEY="your_mistral_api_key"
-  export TWILIO_ACCOUNT_SID="your_twilio_sid" 
-  export TWILIO_AUTH_TOKEN="your_twilio_token"
-  export TWILIO_PHONE_NUMBER="your_twilio_number"
+  # AI API Keys
+  MISTRAL_API_KEY=your_mistral_api_key
+  OPENAI_API_KEY=your_openai_key_optional
+  
+  # Twilio Configuration
+  TWILIO_ACCOUNT_SID=your_twilio_sid
+  TWILIO_AUTH_TOKEN=your_twilio_token
+  TWILIO_PHONE_NUMBER=your_twilio_number
+  
+  # Event Data
+  EVENT_DATA_PATH=./data/event.json
+  
+  # Langflow Settings
+  LANGFLOW_HOST=0.0.0.0
+  LANGFLOW_PORT=7860
   ```
 
 ### Account Setup (15 minutes)
 - [ ] **Create Mistral.AI account**
   - Sign up at https://console.mistral.ai/
   - Generate API key
-  - Test with simple curl command
+  - Choose "mistral-small" model for demo (good balance of cost/performance)
+  - Test with simple curl command:
+  ```bash
+  curl -X POST "https://api.mistral.ai/v1/chat/completions" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $MISTRAL_API_KEY" \
+    -d '{
+      "model": "mistral-small",
+      "messages": [{"role": "user", "content": "Hello"}],
+      "max_tokens": 100
+    }'
+  ```
+
 - [ ] **Set up Twilio account**
   - Sign up at https://www.twilio.com/
-  - Get Account SID and Auth Token
+  - Get free trial credits ($15 typically)
+  - Get Account SID and Auth Token from console
   - Purchase/verify phone number for SMS
-  - Test SMS sending with sample message
+  - Test SMS sending:
+  ```bash
+  curl -X POST "https://api.twilio.com/2010-04-01/Accounts/$TWILIO_ACCOUNT_SID/Messages.json" \
+    --data-urlencode "From=$TWILIO_PHONE_NUMBER" \
+    --data-urlencode "Body=eMCeeP test message" \
+    --data-urlencode "To=+1234567890" \
+    -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
+  ```
 
 ### Demo Data Creation (25 minutes)
-- [ ] **Create event.json file**
+- [ ] **Create comprehensive event.json file**
   ```json
   {
+    "event_id": "tech-conf-2025",
     "name": "Tech Conference 2025",
     "date": "2025-06-21",
-    "location": "Downtown Convention Center",
+    "location": {
+      "name": "Downtown Convention Center",
+      "address": "123 Main Street, Suite 100",
+      "parking": "Free parking available in garage levels 2-4, enter from Oak Street",
+      "maps_url": "https://maps.google.com/convention-center"
+    },
     "schedule": [
       {
         "id": "registration",
         "time": "09:00",
+        "end_time": "10:00",
         "title": "Registration & Check-in",
-        "location": "Main Lobby"
+        "location": "Main Lobby",
+        "capacity": 500,
+        "description": "Check-in and welcome breakfast"
       },
       {
         "id": "keynote",
-        "time": "10:00", 
-        "title": "Opening Keynote",
+        "time": "10:00",
+        "end_time": "11:00",
+        "title": "Opening Keynote: The Future of AI",
         "location": "Main Hall",
-        "speaker": "Dr. Sarah Chen"
+        "speaker": "Dr. Sarah Chen",
+        "capacity": 400,
+        "description": "Exploring the next decade of AI innovation"
       },
       {
         "id": "coffee_break",
         "time": "11:00",
+        "end_time": "11:30",
         "title": "Coffee Break",
-        "location": "Lobby"
+        "location": "Lobby",
+        "description": "Networking and refreshments"
       },
       {
         "id": "panel",
         "time": "11:30",
+        "end_time": "12:30",
         "title": "AI Innovation Panel",
-        "location": "Main Hall"
+        "location": "Main Hall",
+        "speakers": ["Dr. Sarah Chen", "Prof. Mike Rodriguez", "Lisa Wang"],
+        "capacity": 400,
+        "description": "Panel discussion on AI trends and challenges"
       },
       {
         "id": "lunch",
         "time": "12:30",
+        "end_time": "14:00",
         "title": "Networking Lunch",
-        "location": "Exhibition Hall"
+        "location": "Exhibition Hall",
+        "description": "Lunch with dietary accommodations available"
+      },
+      {
+        "id": "workshops",
+        "time": "14:00",
+        "end_time": "16:00",
+        "title": "Parallel Workshops",
+        "sessions": [
+          {
+            "title": "Machine Learning 101",
+            "location": "Room A",
+            "capacity": 50
+          },
+          {
+            "title": "AI Ethics Workshop",
+            "location": "Room B", 
+            "capacity": 50
+          }
+        ]
       }
     ],
     "attendees": [
-      {"name": "John Doe", "phone": "+1234567890", "email": "john@example.com"},
-      {"name": "Jane Smith", "phone": "+1234567891", "email": "jane@example.com"},
-      {"name": "Mike Johnson", "phone": "+1234567892", "email": "mike@example.com"}
+      {
+        "id": "att_001",
+        "name": "John Doe",
+        "phone": "+1234567890",
+        "email": "john@example.com",
+        "company": "Tech Corp",
+        "dietary_restrictions": "vegetarian"
+      },
+      {
+        "id": "att_002", 
+        "name": "Jane Smith",
+        "phone": "+1234567891",
+        "email": "jane@example.com",
+        "company": "Innovation Labs",
+        "dietary_restrictions": "none"
+      },
+      {
+        "id": "att_003",
+        "name": "Mike Johnson", 
+        "phone": "+1234567892",
+        "email": "mike@example.com",
+        "company": "StartupAI",
+        "dietary_restrictions": "gluten-free"
+      }
     ],
+    "organizer": {
+      "name": "Event Manager",
+      "phone": "+1555123456",
+      "email": "manager@techconf.com"
+    },
     "faq": {
       "registration": "Registration starts at 9:00 AM in the main lobby. Please bring your confirmation email and ID.",
       "parking": "Free parking is available in the convention center garage on levels 2-4. Enter from Oak Street.",
       "wifi": "WiFi network: EventWiFi, Password: Connect2025",
-      "lunch": "Lunch will be provided at 12:30 PM in the exhibition hall. Dietary restrictions accommodated.",
-      "location": "Downtown Convention Center, 123 Main Street, Suite 100",
+      "lunch": "Lunch will be provided at 12:30 PM in the exhibition hall. Dietary restrictions accommodated - please inform staff.",
+      "location": "Downtown Convention Center, 123 Main Street, Suite 100. The venue is wheelchair accessible.",
       "dress_code": "Business casual attire recommended",
-      "contact": "For questions, contact events@techconf.com or call (555) 123-4567"
-    }
+      "contact": "For questions, contact events@techconf.com or call (555) 123-4567",
+      "schedule": "Full schedule available in the mobile app or on the event website",
+      "workshops": "Workshop registration is first-come-first-served. Capacity is limited to 50 per session.",
+      "networking": "Networking breaks are scheduled at 11:00 AM and 12:30 PM. Use the #TechConf2025 hashtag!"
+    },
+    "common_changes": [
+      {
+        "type": "time_change",
+        "example": "Move keynote from 10:00 to 10:30",
+        "impact_analysis": true
+      },
+      {
+        "type": "location_change", 
+        "example": "Move panel to Room B due to technical issues",
+        "notify_attendees": true
+      },
+      {
+        "type": "speaker_change",
+        "example": "Dr. Chen cancelled, replaced by Prof. Martinez",
+        "update_materials": true
+      }
+    ]
   }
   ```
 
-### Langflow Launch (10 minutes)
+- [ ] **Create attendee contact database (JSON)**
+  ```json
+  {
+    "contacts": [
+      {
+        "phone": "+1234567890",
+        "name": "John Doe",
+        "preference": "sms",
+        "timezone": "EST"
+      },
+      {
+        "phone": "+1234567891", 
+        "name": "Jane Smith",
+        "preference": "sms",
+        "timezone": "EST"
+      }
+    ]
+  }
+  ```
+
+### Langflow Launch & Initial Setup (15 minutes)
 - [ ] **Start Langflow server**
   ```bash
-  langflow run --host 0.0.0.0 --port 7860
+  # Make sure virtual environment is activated
+  source .venv/bin/activate
+  
+  # Start with specific configuration
+  langflow run --host 0.0.0.0 --port 7860 --env-file .env
   ```
 - [ ] **Access Langflow interface**
   - Open browser to http://localhost:7860
-  - Verify interface loads correctly
-  - Explore available components
+  - Create new project: "eMCeeP Demo"
+  - Explore component library
+  - Test basic drag-and-drop functionality
 
-### Basic Integration Tests (20 minutes)
-- [ ] **Test Mistral.AI connection**
-  - Create simple test script:
-  ```python
-  import requests
-  import os
+## 🎯 Core Langflow Flows Design
+
+### Flow 1: Event Manager Voice Commands (Priority 1)
+**Purpose**: Process voice commands from event organizer
+
+**Components needed**:
+1. **Text Input** (simulating voice-to-text)
+2. **Custom Python Function** - Intent classification
+3. **Mistral LLM** - Command understanding
+4. **Event Data Retrieval** - Load event.json
+5. **Schedule Updater** - Modify event data
+6. **Notification Sender** - Send updates via Twilio
+7. **Response Generator** - Confirm action taken
+
+**Implementation Steps**:
+- [ ] **Create "Voice Command Flow"**
+  - Add Text Input component
+  - Configure for commands like: "Move keynote from 10:00 to 10:30"
+  - Connect to LLM for intent extraction
   
-  def test_mistral():
+- [ ] **Add Intent Classification Function**
+  ```python
+  def classify_intent(command: str) -> dict:
+      """Extract intent and parameters from voice command"""
+      # Use regex or simple parsing for demo
+      patterns = {
+          'time_change': r'move (\w+) from (\d{1,2}:\d{2}) to (\d{1,2}:\d{2})',
+          'location_change': r'move (\w+) to (.+)',
+          'speaker_change': r'replace (\w+) with (\w+)',
+          'cancel_event': r'cancel (\w+)'
+      }
+      
+      for intent, pattern in patterns.items():
+          match = re.search(pattern, command.lower())
+          if match:
+              return {
+                  'intent': intent,
+                  'params': list(match.groups()),
+                  'original_command': command
+              }
+      
+      return {'intent': 'unknown', 'params': [], 'original_command': command}
+  ```
+
+- [ ] **Configure LLM for Event Management**
+  - Model: mistral-small
+  - System prompt: 
+  ```
+  You are eMCeeP, an AI event management assistant. 
+  Your job is to help event organizers make changes to events efficiently.
+  
+  When processing commands:
+  1. Identify what needs to change (time, location, speaker, etc.)
+  2. Extract specific parameters (old value, new value)
+  3. Consider impact on other schedule items
+  4. Generate appropriate notifications for attendees
+  
+  Always confirm changes clearly and ask if you should proceed with notifications.
+  ```
+
+### Flow 2: Attendee Q&A System (Priority 2)  
+**Purpose**: Answer common attendee questions instantly
+
+**Components needed**:
+1. **Text Input** (attendee question)
+2. **FAQ Matcher** - Check against known questions
+3. **Mistral LLM** - Generate contextual answers
+4. **Event Data Lookup** - Access event details
+5. **Response Formatter** - Format for SMS/chat
+6. **Escalation Trigger** - Detect complex queries
+
+**Implementation Steps**:
+- [ ] **Create "FAQ Flow"**
+  - Input: Attendee question via SMS/web
+  - Process: Match against FAQ database
+  - Output: Instant response or escalation
+  
+- [ ] **Add FAQ Matching Function**
+  ```python
+  def match_faq(question: str, faq_data: dict) -> dict:
+      """Match question against FAQ database"""
+      question_lower = question.lower()
+      
+      # Simple keyword matching for demo
+      keyword_map = {
+          'wifi': 'wifi',
+          'password': 'wifi', 
+          'internet': 'wifi',
+          'parking': 'parking',
+          'location': 'location',
+          'address': 'location',
+          'lunch': 'lunch',
+          'food': 'lunch',
+          'schedule': 'schedule',
+          'time': 'schedule',
+          'registration': 'registration',
+          'check': 'registration'
+      }
+      
+      for keyword, faq_key in keyword_map.items():
+          if keyword in question_lower:
+              return {
+                  'matched': True,
+                  'answer': faq_data.get(faq_key, 'Information not available'),
+                  'confidence': 0.8,
+                  'source': 'faq'
+              }
+      
+      return {'matched': False, 'confidence': 0.0, 'source': 'none'}
+  ```
+
+### Flow 3: Smart Escalation System (Priority 3)
+**Purpose**: Detect when organizer intervention is needed
+
+**Components needed**:
+1. **Question Analyzer** - Analyze complexity/urgency
+2. **Frequency Counter** - Track repeated questions  
+3. **Sentiment Analysis** - Detect frustration
+4. **Escalation Decision** - Determine if organizer needed
+5. **Alert Sender** - Notify organizer via SMS/call
+
+**Implementation Steps**:
+- [ ] **Create "Escalation Flow"**
+- [ ] **Add Question Analysis Function**
+  ```python
+  def should_escalate(question: str, context: dict) -> bool:
+      """Determine if question needs organizer attention"""
+      
+      # Escalation triggers
+      escalation_keywords = [
+          'emergency', 'urgent', 'problem', 'issue', 'broken',
+          'not working', 'angry', 'complaint', 'refund', 'cancel'
+      ]
+      
+      question_lower = question.lower()
+      
+      # Check for urgent keywords
+      if any(keyword in question_lower for keyword in escalation_keywords):
+          return True
+      
+      # Check frequency (if same question asked >5 times)
+      if context.get('question_frequency', 0) > 5:
+          return True
+      
+      # Check if answer confidence is low
+      if context.get('answer_confidence', 1.0) < 0.5:
+          return True
+          
+      return False
+  ```
+
+## 🔧 Integration & Testing (30 minutes)
+
+### API Integration Tests
+- [ ] **Test Mistral.AI integration**
+  Create `scripts/test_mistral.py`:
+  ```python
+  import os
+  import requests
+  from dotenv import load_dotenv
+  
+  load_dotenv()
+  
+  def test_mistral_connection():
+      """Test Mistral API connection and response"""
+      url = "https://api.mistral.ai/v1/chat/completions"
       headers = {
           "Authorization": f"Bearer {os.getenv('MISTRAL_API_KEY')}",
           "Content-Type": "application/json"
       }
-      data = {
-          "model": "mistral-tiny",
-          "messages": [{"role": "user", "content": "Hello, this is a test"}],
-          "max_tokens": 50
-      }
-      response = requests.post(
-          "https://api.mistral.ai/v1/chat/completions",
-          headers=headers, json=data
-      )
-      print(response.json())
-  
-  test_mistral()
-  ```
-  - Verify API response
-  - Note any rate limits or issues
-
-- [ ] **Test Twilio SMS**
-  - Create simple test script:
-  ```python
-  from twilio.rest import Client
-  import os
-  
-  def test_sms():
-      client = Client(
-          os.getenv('TWILIO_ACCOUNT_SID'),
-          os.getenv('TWILIO_AUTH_TOKEN')
-      )
       
-      message = client.messages.create(
-          body="eMCeeP test message",
-          from_=os.getenv('TWILIO_PHONE_NUMBER'),
-          to="+1234567890"  # Replace with your test number
-      )
-      print(f"Message sent: {message.sid}")
+      # Test 1: Simple response
+      data = {
+          "model": "mistral-small",
+          "messages": [
+              {"role": "system", "content": "You are eMCeeP, an event management AI assistant."},
+              {"role": "user", "content": "What's the WiFi password for the event?"}
+          ],
+          "max_tokens": 150
+      }
+      
+      try:
+          response = requests.post(url, headers=headers, json=data)
+          response.raise_for_status()
+          result = response.json()
+          print("✅ Mistral API test successful")
+          print(f"Response: {result['choices'][0]['message']['content']}")
+          return True
+      except Exception as e:
+          print(f"❌ Mistral API test failed: {e}")
+          return False
   
-  test_sms()
+  # Test 2: Event management scenario
+  def test_event_command():
+      """Test event management command processing"""
+      # This will be implemented in langflow
+      pass
+  
+  if __name__ == "__main__":
+      test_mistral_connection()
   ```
-  - Send test SMS to your phone
-  - Verify message received
-  - Check Twilio console for delivery status
 
-## 🔧 Langflow Component Setup
+- [ ] **Test Twilio SMS integration**
+  Create `scripts/test_twilio.py`:
+  ```python
+  import os
+  from twilio.rest import Client
+  from dotenv import load_dotenv
+  
+  load_dotenv()
+  
+  def test_sms_sending():
+      """Test SMS sending functionality"""
+      try:
+          client = Client(
+              os.getenv('TWILIO_ACCOUNT_SID'),
+              os.getenv('TWILIO_AUTH_TOKEN')
+          )
+          
+          # Send test message
+          message = client.messages.create(
+              body="🎤 eMCeeP test message: This is your AI event assistant!",
+              from_=os.getenv('TWILIO_PHONE_NUMBER'),
+              to="+1234567890"  # Replace with your test number
+          )
+          
+          print(f"✅ SMS sent successfully. Message ID: {message.sid}")
+          return True
+          
+      except Exception as e:
+          print(f"❌ SMS test failed: {e}")
+          return False
+  
+  def test_bulk_notification():
+      """Test sending notifications to multiple attendees"""
+      attendees = [
+          {"name": "John", "phone": "+1234567890"},
+          {"name": "Jane", "phone": "+1234567891"}
+      ]
+      
+      message_body = """
+  🎤 eMCeeP Update: The keynote has been moved from 10:00 AM to 10:30 AM. 
+  
+  Updated Schedule:
+  • 10:30 AM - Opening Keynote (Main Hall)
+  • 11:30 AM - Coffee Break
+  
+  Questions? Reply to this message!
+  """
+      
+      # Demo would send to attendees
+      print("📱 Would send bulk notification to all attendees")
+      print(f"Message: {message_body}")
+      
+  if __name__ == "__main__":
+      test_sms_sending()
+      test_bulk_notification()
+  ```
 
-### Create Custom Components (In Langflow UI)
-- [ ] **Add basic Chat Input/Output components**
-  - Drag Chat Input to canvas
-  - Drag Chat Output to canvas
-  - Connect them for basic flow
+### Langflow Flow Testing
+- [ ] **Test Flow 1: Voice Commands**
+  - Input: "Move the keynote from 10:00 to 10:30"
+  - Expected: Schedule updated, attendees notified
+  - Verify: JSON file updated, SMS sent
 
-- [ ] **Add LLM component**
-  - Add OpenAI/LLM component
-  - Configure for Mistral.AI endpoint
-  - Test with simple prompt
+- [ ] **Test Flow 2: FAQ Responses**  
+  - Input: "What's the WiFi password?"
+  - Expected: Instant response with password
+  - Verify: Correct answer retrieved from event data
 
-- [ ] **Save initial flow**
-  - Name: "Basic Test Flow"
-  - Test that components connect properly
-  - Verify chat interface works
+- [ ] **Test Flow 3: Escalation Detection**
+  - Input: "The microphone is broken and people are complaining!"
+  - Expected: Organizer immediately notified
+  - Verify: Escalation alert sent
 
 ## 📊 Validation Checklist
 
 ### Technical Validation
-- [ ] **Langflow server running stable**
-- [ ] **All APIs responding correctly**
-- [ ] **Demo data file loads without errors**
-- [ ] **Environment variables properly set**
-- [ ] **No critical dependency issues**
+- [ ] **Langflow server running stable** (no crashes after 10 minutes)
+- [ ] **All APIs responding correctly** (< 3 second response time)
+- [ ] **Demo data file loads without errors** (valid JSON, all fields present)
+- [ ] **Environment variables properly set** (all required keys present)
+- [ ] **No critical dependency issues** (all imports working)
 
 ### Demo Preparation
-- [ ] **Demo phone numbers ready for SMS**
-- [ ] **Test scenarios identified**
-  - Schedule change command
-  - FAQ question
-  - Location update
+- [ ] **Demo phone numbers ready for SMS** (at least 2 test numbers)
+- [ ] **Test scenarios prepared and rehearsed**
+  - Scenario 1: "eMCeeP, move lunch from 12:30 to 1:00 PM due to speaker delay"
+  - Scenario 2: Attendee asks "Where is the parking?"
+  - Scenario 3: "There's a fire alarm going off, what do I do?"
 - [ ] **Backup plans prepared**
-  - Fallback responses if APIs fail
-  - Error messages for common issues
+  - Manual responses if AI fails
+  - Pre-written SMS templates
+  - Error handling for API failures
+- [ ] **Demo script written** (what to say, which flows to show)
 
-## 🚨 Troubleshooting Guide
+### Performance Validation
+- [ ] **Response time < 5 seconds** for simple queries
+- [ ] **SMS delivery < 30 seconds** 
+- [ ] **Event data updates persist** (changes saved to file)
+- [ ] **Error handling works** (graceful failure messages)
 
-### Common Issues & Solutions
+## 🚀 Next Steps After Phase 1
 
-#### **Langflow won't start**
+After completing Phase 1, you should have:
+- ✅ Working Langflow installation with 3 core flows
+- ✅ Event data management system
+- ✅ SMS notification capability  
+- ✅ AI-powered question answering
+- ✅ Basic escalation detection
+
+**Ready for Phase 2**: Voice integration, advanced AI features, and polished demo presentation.
+
+## 🆘 Troubleshooting Guide
+
+### Common Issues:
+1. **Langflow won't start**: Check Python version (3.10+), dependencies installed
+2. **Mistral API errors**: Verify API key, check rate limits
+3. **Twilio SMS fails**: Confirm account verified, phone number active
+4. **Event data not loading**: Validate JSON syntax, check file permissions
+5. **Flows not connecting**: Ensure component compatibility, check data types
+
+### Quick Fixes:
 ```bash
-# Try different port
-langflow run --port 7861
+# Reset environment
+deactivate
+rm -rf .venv
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 
-# Check Python version
-python --version  # Should be 3.8+
+# Check API keys
+echo $MISTRAL_API_KEY | head -c 20
+curl -I https://api.mistral.ai/v1/models -H "Authorization: Bearer $MISTRAL_API_KEY"
 
-# Reinstall if needed
-pip uninstall langflow
-pip install langflow
+# Restart langflow
+pkill -f langflow
+langflow run --host 0.0.0.0 --port 7860
 ```
-
-#### **Mistral.AI API errors**
-- Check API key format (starts with "sk-")
-- Verify account has credits
-- Try "mistral-tiny" model if others fail
-- Check rate limits
-
-#### **Twilio SMS fails**
-- Verify phone number format (+1234567890)
-- Check account balance
-- Confirm phone number is verified
-- Test with Twilio console first
-
-#### **JSON file errors**
-- Validate JSON syntax at jsonlint.com
-- Check file permissions
-- Ensure UTF-8 encoding
-
-## 🎯 Success Criteria for Phase 1
-
-At the end of 1.5 hours, you should have:
-- ✅ **Langflow running** with basic interface
-- ✅ **Mistral.AI responding** to test prompts
-- ✅ **Twilio sending SMS** to test numbers
-- ✅ **Demo event data** loaded and accessible
-- ✅ **Basic flow created** in Langflow UI
-
-## 🚀 Transition to Phase 2
-
-Once Phase 1 is complete, you're ready to build the 3 core Langflow flows:
-1. **Command Processor Flow** - Parse and execute event commands
-2. **FAQ Bot Flow** - Answer attendee questions
-3. **Demo Controller Flow** - Switch between organizer/attendee modes
-
-**Time remaining for Phase 2**: 4.5 hours  
-**Next focus**: Building the actual demo scenarios
 
 ---
 

@@ -1,0 +1,38 @@
+# eMCeeP Requirements
+# Install with: pip install -r requirements.txt
+
+# Core Langflow and AI
+langflow>=1.4.0
+mistralai>=1.0.0
+openai>=1.0.0
+
+# SMS and Communication
+twilio>=9.0.0
+
+# Web Framework (for webhooks/API)
+fastapi>=0.100.0
+uvicorn>=0.20.0
+flask>=2.3.0
+
+# Data Processing
+requests>=2.31.0
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+
+# Utilities
+python-dateutil>=2.8.0
+pytz>=2023.3
+
+# Development and Testing
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+ruff>=0.1.0
+
+# Optional: Voice Processing (for future phases)
+# speechrecognition>=3.10.0
+# pyttsx3>=2.90
+
+# Optional: Advanced NLP
+# spacy>=3.7.0
+# nltk>=3.8.0 

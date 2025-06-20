@@ -1,0 +1,136 @@
+{
+  "event_id": "tech-conf-2025",
+  "name": "Tech Conference 2025",
+  "date": "2025-06-21",
+  "location": {
+    "name": "Downtown Convention Center",
+    "address": "123 Main Street, Suite 100",
+    "parking": "Free parking available in garage levels 2-4, enter from Oak Street",
+    "maps_url": "https://maps.google.com/convention-center"
+  },
+  "schedule": [
+    {
+      "id": "registration",
+      "time": "09:00",
+      "end_time": "10:00",
+      "title": "Registration & Check-in",
+      "location": "Main Lobby",
+      "capacity": 500,
+      "description": "Check-in and welcome breakfast"
+    },
+    {
+      "id": "keynote",
+      "time": "10:00",
+      "end_time": "11:00",
+      "title": "Opening Keynote: The Future of AI",
+      "location": "Main Hall",
+      "speaker": "Dr. Sarah Chen",
+      "capacity": 400,
+      "description": "Exploring the next decade of AI innovation"
+    },
+    {
+      "id": "coffee_break",
+      "time": "11:00",
+      "end_time": "11:30",
+      "title": "Coffee Break",
+      "location": "Lobby",
+      "description": "Networking and refreshments"
+    },
+    {
+      "id": "panel",
+      "time": "11:30",
+      "end_time": "12:30",
+      "title": "AI Innovation Panel",
+      "location": "Main Hall",
+      "speakers": ["Dr. Sarah Chen", "Prof. Mike Rodriguez", "Lisa Wang"],
+      "capacity": 400,
+      "description": "Panel discussion on AI trends and challenges"
+    },
+    {
+      "id": "lunch",
+      "time": "12:30",
+      "end_time": "14:00",
+      "title": "Networking Lunch",
+      "location": "Exhibition Hall",
+      "description": "Lunch with dietary accommodations available"
+    },
+    {
+      "id": "workshops",
+      "time": "14:00",
+      "end_time": "16:00",
+      "title": "Parallel Workshops",
+      "sessions": [
+        {
+          "title": "Machine Learning 101",
+          "location": "Room A",
+          "capacity": 50
+        },
+        {
+          "title": "AI Ethics Workshop",
+          "location": "Room B", 
+          "capacity": 50
+        }
+      ]
+    }
+  ],
+  "attendees": [
+    {
+      "id": "att_001",
+      "name": "John Doe",
+      "phone": "+1234567890",
+      "email": "john@example.com",
+      "company": "Tech Corp",
+      "dietary_restrictions": "vegetarian"
+    },
+    {
+      "id": "att_002", 
+      "name": "Jane Smith",
+      "phone": "+1234567891",
+      "email": "jane@example.com",
+      "company": "Innovation Labs",
+      "dietary_restrictions": "none"
+    },
+    {
+      "id": "att_003",
+      "name": "Mike Johnson", 
+      "phone": "+1234567892",
+      "email": "mike@example.com",
+      "company": "StartupAI",
+      "dietary_restrictions": "gluten-free"
+    }
+  ],
+  "organizer": {
+    "name": "Event Manager",
+    "phone": "+1555123456",
+    "email": "manager@techconf.com"
+  },
+  "faq": {
+    "registration": "Registration starts at 9:00 AM in the main lobby. Please bring your confirmation email and ID.",
+    "parking": "Free parking is available in the convention center garage on levels 2-4. Enter from Oak Street.",
+    "wifi": "WiFi network: EventWiFi, Password: Connect2025",
+    "lunch": "Lunch will be provided at 12:30 PM in the exhibition hall. Dietary restrictions accommodated - please inform staff.",
+    "location": "Downtown Convention Center, 123 Main Street, Suite 100. The venue is wheelchair accessible.",
+    "dress_code": "Business casual attire recommended",
+    "contact": "For questions, contact events@techconf.com or call (555) 123-4567",
+    "schedule": "Full schedule available in the mobile app or on the event website",
+    "workshops": "Workshop registration is first-come-first-served. Capacity is limited to 50 per session.",
+    "networking": "Networking breaks are scheduled at 11:00 AM and 12:30 PM. Use the #TechConf2025 hashtag!"
+  },
+  "common_changes": [
+    {
+      "type": "time_change",
+      "example": "Move keynote from 10:00 to 10:30",
+      "impact_analysis": true
+    },
+    {
+      "type": "location_change", 
+      "example": "Move panel to Room B due to technical issues",
+      "notify_attendees": true
+    },
+    {
+      "type": "speaker_change",
+      "example": "Dr. Chen cancelled, replaced by Prof. Martinez",
+      "update_materials": true
+    }
+  ]
+} 
