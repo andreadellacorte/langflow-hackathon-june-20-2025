@@ -3,7 +3,6 @@
 
 # Core Langflow and AI
 langflow>=1.4.0
-mistralai>=1.0.0
 openai>=1.0.0
 
 # SMS and Communication

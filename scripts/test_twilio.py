@@ -16,7 +16,7 @@ def test_sms_sending():
         message = client.messages.create(
             body="🎤 eMCeeP test message: This is your AI event assistant!",
             from_=os.getenv('TWILIO_PHONE_NUMBER'),
-            to="+1234567890"  # Replace with your test number
+            to="+447575171999"  # Replace with your test number
         )
         
         print(f"✅ SMS sent successfully. Message ID: {message.sid}")
@@ -29,8 +29,8 @@ def test_sms_sending():
 def test_bulk_notification():
     """Test sending notifications to multiple attendees"""
     attendees = [
-        {"name": "John", "phone": "+1234567890"},
-        {"name": "Jane", "phone": "+1234567891"}
+        {"name": "John", "phone": "+447575171999"},
+        {"name": "Jane", "phone": "+447575171999"}
     ]
     
     message_body = """🎤 eMCeeP Update: The keynote has been moved from 10:00 AM to 10:30 AM. 

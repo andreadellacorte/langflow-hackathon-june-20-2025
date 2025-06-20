@@ -64,7 +64,7 @@ def check_env_file():
     
     # Check for required variables
     required_vars = [
-        "MISTRAL_API_KEY",
+        "OPENAI_API_KEY",
         "TWILIO_ACCOUNT_SID", 
         "TWILIO_AUTH_TOKEN",
         "TWILIO_PHONE_NUMBER"
@@ -140,16 +140,16 @@ def run_api_tests():
     """Run basic API tests if credentials are available"""
     print("🧪 Running API tests...")
     
-    # Test Mistral API
+    # Test OpenAI API
     try:
-        result = subprocess.run([sys.executable, "scripts/test_mistral.py"], 
+        result = subprocess.run([sys.executable, "scripts/test_openai.py"], 
                               capture_output=True, text=True, timeout=30)
         if result.returncode == 0:
-            print("✅ Mistral API test passed")
+            print("✅ OpenAI API test passed")
         else:
-            print("⚠️  Mistral API test issues (check your API key)")
+            print("⚠️  OpenAI API test issues (check your API key)")
     except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
-        print("⚠️  Could not run Mistral API test")
+        print("⚠️  Could not run OpenAI API test")
     
     # Test Twilio (connection only, no SMS)
     try:
@@ -171,7 +171,7 @@ def print_next_steps():
     print("Next steps:")
     print("1. 🔑 Edit .env file with your actual API keys")
     print("2. 🧪 Run test scripts:")
-    print("   python scripts/test_mistral.py")
+    print("   python scripts/test_openai.py")
     print("   python scripts/test_twilio.py")
     print("3. 🚀 Start Langflow:")
     print("   langflow run --host 0.0.0.0 --port 7860")
