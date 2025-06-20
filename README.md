@@ -1,4 +1,6 @@
-![eMCeeP Logo](raw.webp)
+<p align="center">
+  <img src="images/logo.webp" alt="eMCeeP Logo">
+</p>
 
 # 🎤 eMCeeP - Your AI Event Management Assistant
 
