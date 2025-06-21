@@ -53,3 +53,58 @@
 2025-06-21 10:43:01,550 - __main__ - ERROR - Request error to Langflow: Expecting value: line 1 column 1 (char 0)
 2025-06-21 10:43:01,551 - __main__ - INFO - Voice response to +447575171999: Hi! I'm eMCeeP, your AI event assistant. I'm experiencing some technical difficulties right now. Please try again in a moment, or find a staff member for immediate assistance.
 2025-06-21 10:43:01,551 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:43:01] "POST /voice/process HTTP/1.1" 200 -
+2025-06-21 10:55:25,416 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:55:25] "GET /health HTTP/1.1" 200 -
+2025-06-21 10:55:25,418 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:55:25] "GET /health HTTP/1.1" 200 -
+2025-06-21 10:55:25,539 - __main__ - ERROR - Request error to Langflow: Expecting value: line 1 column 1 (char 0)
+2025-06-21 10:55:25,540 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:55:25] "GET /test-langflow HTTP/1.1" 200 -
+2025-06-21 10:55:25,543 - __main__ - INFO - SMS from +1234567890: Hello, what time does the keynote start?
+2025-06-21 10:55:25,662 - __main__ - ERROR - Request error to Langflow: Expecting value: line 1 column 1 (char 0)
+2025-06-21 10:55:25,662 - __main__ - INFO - SMS response to +1234567890: Hi! I'm eMCeeP, your AI event assistant. I'm experiencing some technical difficulties right now. Please try again in a moment, or find a staff member for immediate assistance.
+2025-06-21 10:55:25,662 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:55:25] "POST /sms HTTP/1.1" 200 -
+2025-06-21 10:55:25,665 - __main__ - INFO - Voice call from +1234567890
+2025-06-21 10:55:25,665 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:55:25] "POST /voice HTTP/1.1" 200 -
+2025-06-21 11:09:29,414 - __main__ - INFO - Voice call from +447575171999
+2025-06-21 11:09:29,415 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 11:09:29] "POST /voice HTTP/1.1" 200 -
+2025-06-21 11:09:47,336 - __main__ - INFO - Voice transcription from +447575171999: Is Santa Claus ending events.
+2025-06-21 11:09:47,489 - __main__ - ERROR - Request error to Langflow: Expecting value: line 1 column 1 (char 0)
+2025-06-21 11:09:47,489 - __main__ - INFO - Voice response to +447575171999: Hi! I'm eMCeeP, your AI event assistant. I'm experiencing some technical difficulties right now. Please try again in a moment, or find a staff member for immediate assistance.
+2025-06-21 11:09:47,490 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 11:09:47] "POST /voice/process HTTP/1.1" 200 -
+2025-06-21 11:10:37,857 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.168.199:5000
+2025-06-21 11:10:37,857 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-21 11:10:51,165 - __main__ - INFO - Voice call from +447575171999
+2025-06-21 11:10:51,166 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 11:10:51] "POST /voice HTTP/1.1" 200 -
+2025-06-21 11:11:03,435 - __main__ - INFO - Voice transcription from +447575171999: Jumping, the fence Ben.
+2025-06-21 11:11:03,548 - __main__ - ERROR - Request error to Langflow: Expecting value: line 1 column 1 (char 0)
+2025-06-21 11:11:03,549 - __main__ - INFO - Voice response to +447575171999: Hi! I'm eMCeeP, your AI event assistant. I'm experiencing some technical difficulties right now. Please try again in a moment, or find a staff member for immediate assistance.
+2025-06-21 11:11:03,549 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 11:11:03] "POST /voice/process HTTP/1.1" 200 -
+2025-06-21 11:11:39,245 - __main__ - INFO - Voice call from +447575171999
+2025-06-21 11:11:39,246 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 11:11:39] "POST /voice HTTP/1.1" 200 -
+2025-06-21 11:11:48,797 - __main__ - INFO - Voice transcription from +447575171999: Santa Claus attending the event.
+2025-06-21 11:11:48,900 - __main__ - ERROR - Request error to Langflow: Expecting value: line 1 column 1 (char 0)
+2025-06-21 11:11:48,900 - __main__ - INFO - Voice response to +447575171999: Hi! I'm eMCeeP, your AI event assistant. I'm experiencing some technical difficulties right now. Please try again in a moment, or find a staff member for immediate assistance.
+2025-06-21 11:11:48,900 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 11:11:48] "POST /voice/process HTTP/1.1" 200 -
+2025-06-21 11:13:30,245 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.168.199:5000
+2025-06-21 11:13:30,246 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-21 11:13:39,046 - __main__ - INFO - Voice call from +447575171999
+2025-06-21 11:13:39,047 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 11:13:39] "POST /voice HTTP/1.1" 200 -
+2025-06-21 11:13:55,384 - __main__ - INFO - Voice transcription from +447575171999: Sending the event.
+2025-06-21 11:13:59,111 - __main__ - INFO - Voice response to +447575171999: It seems that the command "Sending the event." was not recognized as a specific action. If you could clarify what you would like to do regarding the event, I would be happy to assist you!
+2025-06-21 11:13:59,112 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 11:13:59] "POST /voice/process HTTP/1.1" 200 -
+2025-06-21 11:14:17,312 - __main__ - INFO - Voice transcription from +447575171999: Santa attending the event.
+2025-06-21 11:14:21,359 - __main__ - INFO - Voice response to +447575171999: It seems that the system did not recognize a specific action from your statement about Santa attending the event. If you have a specific request or question regarding Santa's attendance or anything else, please let me know!
+2025-06-21 11:14:21,359 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 11:14:21] "POST /voice/process HTTP/1.1" 200 -
+2025-06-21 11:14:46,022 - __main__ - INFO - Voice transcription from +447575171999: Is Santa Claus attending the event.
+2025-06-21 11:14:50,140 - __main__ - INFO - Voice response to +447575171999: It seems that the system did not recognize the command clearly. However, I can confirm that Santa Claus is indeed attending the event. If you have any further questions or need assistance, feel free to ask!
+2025-06-21 11:14:50,140 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 11:14:50] "POST /voice/process HTTP/1.1" 200 -
+2025-06-21 11:15:11,741 - __main__ - INFO - Voice transcription from +447575171999: Can you tell me if Santa Claus is attending the event?
+2025-06-21 11:15:15,670 - __main__ - INFO - Voice response to +447575171999: Yes, Santa Claus is attending the event! If you have any more questions or need further assistance, feel free to ask!
+2025-06-21 11:15:15,671 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 11:15:15] "POST /voice/process HTTP/1.1" 200 -
+2025-06-21 11:15:31,726 - __main__ - INFO - Voice transcription from +447575171999: For uh, um, of the reindeer.
+2025-06-21 11:15:33,610 - __main__ - INFO - Voice response to +447575171999: It seems like there might be some confusion in the voice command regarding the reindeer. If you could clarify your request or question about the reindeer, I'd be happy to assist you!
+2025-06-21 11:15:33,611 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 11:15:33] "POST /voice/process HTTP/1.1" 200 -
