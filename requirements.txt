@@ -34,4 +34,7 @@ ruff>=0.1.0
 
 # Optional: Advanced NLP
 # spacy>=3.7.0
-# nltk>=3.8.0 
+# nltk>=3.8.0
+
+# MCP Server for Langflow Integration
+mcp>=1.0.0 
