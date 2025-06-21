@@ -115,6 +115,13 @@
       "email": "mike@example.com",
       "company": "StartupAI",
       "dietary_restrictions": "gluten-free"
+    },
+    {
+      "id": "att_004",
+      "name": "Andrea Della Corte",
+      "email": "andrea@example.com",
+      "company": "Tech Startup",
+      "dietary_restrictions": "vegetarian"
     }
   ],
   "organizer": {
@@ -337,6 +344,29 @@
       "old_value": "Lobby",
       "new_value": "Terrace",
       "item_id": "coffee_break"
+    },
+    {
+      "action": "add_schedule_item",
+      "item": {
+        "id": "item_9",
+        "title": "Andrea Della Corte",
+        "time": "09:00",
+        "end_time": "09:00",
+        "location": "N/A",
+        "description": "New attendee with vegetarian dietary restrictions"
+      },
+      "timestamp": "2025-06-21T10:12:18.765508"
+    },
+    {
+      "action": "add_attendee",
+      "attendee": {
+        "id": "att_004",
+        "name": "Andrea Della Corte",
+        "email": "andrea@example.com",
+        "company": "Tech Startup",
+        "dietary_restrictions": "vegetarian"
+      },
+      "timestamp": "2025-06-21T10:15:39.442163"
     }
   ]
 }

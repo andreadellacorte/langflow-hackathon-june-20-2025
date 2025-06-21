@@ -260,6 +260,98 @@ class EventManager:
         except Exception as e:
             logger.error(f"Error updating event details: {e}")
             return False
+    
+    def add_attendee(self, name: str, email: Optional[str] = None, phone: Optional[str] = None, 
+                    company: Optional[str] = None, dietary_restrictions: str = "none") -> bool:
+        """Add a new attendee to the event"""
+        try:
+            if "attendees" not in self.event_data:
+                self.event_data["attendees"] = []
+            
+            # Generate new attendee ID
+            existing_ids = [att.get("id", "") for att in self.event_data["attendees"]]
+            next_id = len(existing_ids) + 1
+            while f"att_{next_id:03d}" in existing_ids:
+                next_id += 1
+            
+            new_attendee = {
+                "id": f"att_{next_id:03d}",
+                "name": name,
+                "dietary_restrictions": dietary_restrictions
+            }
+            
+            if email:
+                new_attendee["email"] = email
+            if phone:
+                new_attendee["phone"] = phone
+            if company:
+                new_attendee["company"] = company
+            
+            self.event_data["attendees"].append(new_attendee)
+            
+            self.add_changelog_entry({
+                "action": "add_attendee",
+                "attendee": new_attendee
+            })
+            
+            return True
+        except Exception as e:
+            logger.error(f"Error adding attendee: {e}")
+            return False
+    
+    def find_attendee(self, identifier: str) -> Optional[Dict]:
+        """Find attendee by ID, name, or email"""
+        attendees = self.event_data.get("attendees", [])
+        identifier_lower = identifier.lower()
+        
+        for attendee in attendees:
+            if (attendee.get("id", "").lower() == identifier_lower or
+                attendee.get("name", "").lower() == identifier_lower or
+                attendee.get("email", "").lower() == identifier_lower):
+                return attendee
+        return None
+    
+    def remove_attendee(self, identifier: str) -> bool:
+        """Remove an attendee from the event"""
+        try:
+            attendee = self.find_attendee(identifier)
+            if not attendee:
+                return False
+            
+            self.event_data["attendees"].remove(attendee)
+            
+            self.add_changelog_entry({
+                "action": "remove_attendee",
+                "removed_attendee": attendee
+            })
+            
+            return True
+        except Exception as e:
+            logger.error(f"Error removing attendee: {e}")
+            return False
+    
+    def update_attendee(self, identifier: str, field: str, value: str) -> bool:
+        """Update attendee information"""
+        try:
+            attendee = self.find_attendee(identifier)
+            if not attendee:
+                return False
+            
+            old_value = attendee.get(field)
+            attendee[field] = value
+            
+            self.add_changelog_entry({
+                "action": "update_attendee",
+                "attendee_id": attendee.get("id"),
+                "field": field,
+                "old_value": old_value,
+                "new_value": value
+            })
+            
+            return True
+        except Exception as e:
+            logger.error(f"Error updating attendee: {e}")
+            return False
 
 
 class IntentClassifier:
@@ -717,6 +809,72 @@ async def handle_list_tools() -> list[Tool]:
             }
         ),
         Tool(
+            name="add_attendee",
+            description="Add a new attendee to the event registration",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Full name of the attendee"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email address of the attendee"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "description": "Phone number of the attendee (optional)"
+                    },
+                    "company": {
+                        "type": "string",
+                        "description": "Company/organization of the attendee (optional)"
+                    },
+                    "dietary_restrictions": {
+                        "type": "string",
+                        "description": "Dietary restrictions (e.g., 'vegetarian', 'gluten-free', 'none')"
+                    }
+                },
+                "required": ["name"]
+            }
+        ),
+        Tool(
+            name="remove_attendee",
+            description="Remove an attendee from the event registration",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "attendee_identifier": {
+                        "type": "string",
+                        "description": "Attendee ID, name, or email to identify the attendee to remove"
+                    }
+                },
+                "required": ["attendee_identifier"]
+            }
+        ),
+        Tool(
+            name="update_attendee",
+            description="Update attendee information including dietary restrictions",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "attendee_identifier": {
+                        "type": "string",
+                        "description": "Attendee ID, name, or email to identify the attendee"
+                    },
+                    "field": {
+                        "type": "string",
+                        "description": "Field to update (name, email, phone, company, dietary_restrictions)"
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "New value for the field"
+                    }
+                },
+                "required": ["attendee_identifier", "field", "value"]
+            }
+        ),
+        Tool(
             name="get_changelog",
             description="Get the history of changes made to the event",
             inputSchema={
@@ -899,6 +1057,78 @@ async def handle_call_tool(name: str, arguments: dict) -> list[TextContent]:
             "detailed_requirements": dietary_details,
             "catering_notes": "Consider offering vegetarian, gluten-free, and regular options based on attendee needs"
         }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    elif name == "add_attendee":
+        name_arg = arguments.get("name", "")
+        email = arguments.get("email")
+        phone = arguments.get("phone")
+        company = arguments.get("company")
+        dietary_restrictions = arguments.get("dietary_restrictions", "none")
+        
+        success = event_manager.add_attendee(name_arg, email, phone, company, dietary_restrictions)
+        
+        if success:
+            event_manager.save_event_data()
+            result = {
+                "success": True,
+                "message": f"Successfully added attendee '{name_arg}'",
+                "name": name_arg,
+                "dietary_restrictions": dietary_restrictions
+            }
+        else:
+            result = {
+                "success": False,
+                "message": f"Failed to add attendee '{name_arg}'",
+                "name": name_arg
+            }
+        
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    elif name == "remove_attendee":
+        attendee_id = arguments.get("attendee_identifier", "")
+        
+        success = event_manager.remove_attendee(attendee_id)
+        
+        if success:
+            event_manager.save_event_data()
+            result = {
+                "success": True,
+                "message": f"Successfully removed attendee '{attendee_id}'",
+                "attendee_identifier": attendee_id
+            }
+        else:
+            result = {
+                "success": False,
+                "message": f"Could not find attendee: {attendee_id}",
+                "attendee_identifier": attendee_id
+            }
+        
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    elif name == "update_attendee":
+        attendee_id = arguments.get("attendee_identifier", "")
+        field = arguments.get("field", "")
+        value = arguments.get("value", "")
+        
+        success = event_manager.update_attendee(attendee_id, field, value)
+        
+        if success:
+            event_manager.save_event_data()
+            result = {
+                "success": True,
+                "message": f"Successfully updated {field} for attendee '{attendee_id}'",
+                "attendee_identifier": attendee_id,
+                "field": field,
+                "value": value
+            }
+        else:
+            result = {
+                "success": False,
+                "message": f"Could not find attendee: {attendee_id}",
+                "attendee_identifier": attendee_id
+            }
+        
         return [TextContent(type="text", text=json.dumps(result, indent=2))]
     
     elif name == "update_faq":

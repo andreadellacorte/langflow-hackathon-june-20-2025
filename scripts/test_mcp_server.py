@@ -109,6 +109,20 @@ async def test_mcp_server():
             }
         },
         {
+            "name": "Add New Attendee",
+            "tool": "add_attendee", 
+            "args": {
+                "name": "Andrea Della Corte",
+                "email": "andrea@example.com",
+                "company": "Tech Startup",
+                "dietary_restrictions": "vegetarian"
+            },
+            "expect": {
+                "success": True,
+                "name": "Andrea Della Corte"
+            }
+        },
+        {
             "name": "Manual Time Update",
             "tool": "update_event_time",
             "args": {
@@ -360,6 +374,24 @@ async def simulate_mcp_call(tool_name: str, args: dict) -> dict:
             "dietary_summary": dietary_summary,
             "detailed_requirements": dietary_details,
             "catering_notes": "Consider offering vegetarian, gluten-free, and regular options based on attendee needs"
+        }
+    
+    elif tool_name == "add_attendee":
+        name = args.get("name", "")
+        email = args.get("email")
+        phone = args.get("phone")
+        company = args.get("company")
+        dietary_restrictions = args.get("dietary_restrictions", "none")
+        
+        success = event_manager.add_attendee(name, email, phone, company, dietary_restrictions)
+        if success:
+            event_manager.save_event_data()
+        
+        return {
+            "success": success,
+            "message": f"Successfully added attendee '{name}'" if success else f"Failed to add attendee '{name}'",
+            "name": name,
+            "dietary_restrictions": dietary_restrictions
         }
     
     else:
