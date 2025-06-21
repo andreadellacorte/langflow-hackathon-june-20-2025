@@ -37,4 +37,8 @@ ruff>=0.1.0
 # nltk>=3.8.0
 
 # MCP Server for Langflow Integration
-mcp>=1.0.0 
+mcp>=1.0.0
+
+# Additional dependencies for webhook server
+gunicorn>=21.0.0  # Production WSGI server
+flask-cors>=4.0.0  # CORS support if needed 

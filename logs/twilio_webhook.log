@@ -1,0 +1,55 @@
+2025-06-21 10:30:00,070 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.2.199:5000
+2025-06-21 10:30:00,070 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-21 10:30:10,454 - werkzeug - INFO - 192.168.2.199 - - [21/Jun/2025 10:30:10] "[33mGET / HTTP/1.1[0m" 404 -
+2025-06-21 10:30:10,701 - werkzeug - INFO - 192.168.2.199 - - [21/Jun/2025 10:30:10] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-06-21 10:30:18,084 - werkzeug - INFO - 192.168.2.199 - - [21/Jun/2025 10:30:18] "[33mGET / HTTP/1.1[0m" 404 -
+2025-06-21 10:30:34,608 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.2.199:5000
+2025-06-21 10:30:34,608 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-21 10:32:02,312 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.2.199:5000
+2025-06-21 10:32:02,313 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-21 10:34:40,146 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.2.199:5000
+2025-06-21 10:34:40,146 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-21 10:37:07,548 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:37:07] "GET /health HTTP/1.1" 200 -
+2025-06-21 10:37:07,550 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:37:07] "GET /health HTTP/1.1" 200 -
+2025-06-21 10:37:08,046 - __main__ - ERROR - Request error to Langflow: Expecting value: line 1 column 1 (char 0)
+2025-06-21 10:37:08,046 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:37:08] "GET /test-langflow HTTP/1.1" 200 -
+2025-06-21 10:37:08,050 - __main__ - INFO - SMS from +1234567890: Hello, what time does the keynote start?
+2025-06-21 10:37:08,184 - __main__ - ERROR - Request error to Langflow: Expecting value: line 1 column 1 (char 0)
+2025-06-21 10:37:08,184 - __main__ - INFO - SMS response to +1234567890: Hi! I'm eMCeeP, your AI event assistant. I'm experiencing some technical difficulties right now. Please try again in a moment, or find a staff member for immediate assistance.
+2025-06-21 10:37:08,185 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:37:08] "POST /sms HTTP/1.1" 200 -
+2025-06-21 10:37:08,187 - __main__ - INFO - Voice call from +1234567890
+2025-06-21 10:37:08,187 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:37:08] "POST /voice HTTP/1.1" 200 -
+2025-06-21 10:40:00,415 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:40:00] "[33mGET / HTTP/1.1[0m" 404 -
+2025-06-21 10:40:00,545 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:40:00] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-06-21 10:41:44,083 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:41:44] "GET /health HTTP/1.1" 200 -
+2025-06-21 10:41:44,086 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:41:44] "GET /health HTTP/1.1" 200 -
+2025-06-21 10:41:44,224 - __main__ - ERROR - Request error to Langflow: Expecting value: line 1 column 1 (char 0)
+2025-06-21 10:41:44,224 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:41:44] "GET /test-langflow HTTP/1.1" 200 -
+2025-06-21 10:41:44,228 - __main__ - INFO - SMS from +1234567890: Hello, what time does the keynote start?
+2025-06-21 10:41:44,359 - __main__ - ERROR - Request error to Langflow: Expecting value: line 1 column 1 (char 0)
+2025-06-21 10:41:44,359 - __main__ - INFO - SMS response to +1234567890: Hi! I'm eMCeeP, your AI event assistant. I'm experiencing some technical difficulties right now. Please try again in a moment, or find a staff member for immediate assistance.
+2025-06-21 10:41:44,359 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:41:44] "POST /sms HTTP/1.1" 200 -
+2025-06-21 10:41:44,362 - __main__ - INFO - Voice call from +1234567890
+2025-06-21 10:41:44,363 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:41:44] "POST /voice HTTP/1.1" 200 -
+2025-06-21 10:42:25,492 - __main__ - INFO - Voice call from +447575171999
+2025-06-21 10:42:25,492 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:42:25] "POST /voice HTTP/1.1" 200 -
+2025-06-21 10:42:40,236 - __main__ - INFO - Voice transcription from +447575171999: System.  Right. There is Santa Claus attending event.
+2025-06-21 10:42:40,348 - __main__ - ERROR - Request error to Langflow: Expecting value: line 1 column 1 (char 0)
+2025-06-21 10:42:40,348 - __main__ - INFO - Voice response to +447575171999: Hi! I'm eMCeeP, your AI event assistant. I'm experiencing some technical difficulties right now. Please try again in a moment, or find a staff member for immediate assistance.
+2025-06-21 10:42:40,349 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:42:40] "POST /voice/process HTTP/1.1" 200 -
+2025-06-21 10:43:01,439 - __main__ - INFO - Voice transcription from +447575171999: No, that's fine. Thanks, bye.
+2025-06-21 10:43:01,550 - __main__ - ERROR - Request error to Langflow: Expecting value: line 1 column 1 (char 0)
+2025-06-21 10:43:01,551 - __main__ - INFO - Voice response to +447575171999: Hi! I'm eMCeeP, your AI event assistant. I'm experiencing some technical difficulties right now. Please try again in a moment, or find a staff member for immediate assistance.
+2025-06-21 10:43:01,551 - werkzeug - INFO - 127.0.0.1 - - [21/Jun/2025 10:43:01] "POST /voice/process HTTP/1.1" 200 -

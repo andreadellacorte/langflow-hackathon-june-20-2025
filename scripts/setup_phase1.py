@@ -176,7 +176,9 @@ def print_next_steps():
     print("3. 🚀 Start Langflow:")
     print("   langflow run --host 0.0.0.0 --port 7860")
     print("4. 🌐 Open browser to: http://localhost:7860")
-    print("5. 📖 Follow Phase 1 implementation guide in docs/phase1.md")
+    print("5. 🎤 Start webhook server:")
+    print("   python scripts/start_webhook_server.py")
+    print("6. 📖 Follow Phase 1 implementation guide in docs/phase1.md")
     print()
     print("Ready to build your eMCeeP demo! 🎤")
 

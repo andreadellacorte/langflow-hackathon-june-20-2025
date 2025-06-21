@@ -122,6 +122,11 @@
       "email": "andrea@example.com",
       "company": "Tech Startup",
       "dietary_restrictions": "vegetarian"
+    },
+    {
+      "id": "att_005",
+      "name": "Santa Claus",
+      "dietary_restrictions": "no reindeer meat"
     }
   ],
   "organizer": {
@@ -367,6 +372,15 @@
         "dietary_restrictions": "vegetarian"
       },
       "timestamp": "2025-06-21T10:15:39.442163"
+    },
+    {
+      "action": "add_attendee",
+      "attendee": {
+        "id": "att_005",
+        "name": "Santa Claus",
+        "dietary_restrictions": "no reindeer meat"
+      },
+      "timestamp": "2025-06-21T10:18:04.221936"
     }
   ]
 }
