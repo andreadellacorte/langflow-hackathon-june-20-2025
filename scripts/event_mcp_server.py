@@ -694,7 +694,7 @@ async def handle_list_tools() -> list[Tool]:
         ),
         Tool(
             name="get_attendees",
-            description="Get attendee information and registration details",
+            description="Get attendee information including names, companies, contact details, and DIETARY RESTRICTIONS. Use this when planning food/catering.",
             inputSchema={
                 "type": "object",
                 "properties": {}
@@ -703,6 +703,14 @@ async def handle_list_tools() -> list[Tool]:
         Tool(
             name="get_everything",
             description="Get all event data as fallback when specific information isn't available in other tools",
+            inputSchema={
+                "type": "object",
+                "properties": {}
+            }
+        ),
+        Tool(
+            name="get_dietary_requirements",
+            description="Get dietary restrictions and food preferences of all attendees for catering/food planning purposes",
             inputSchema={
                 "type": "object",
                 "properties": {}
@@ -861,6 +869,35 @@ async def handle_call_tool(name: str, arguments: dict) -> list[TextContent]:
     elif name == "get_everything":
         result = {
             "complete_event_data": event_manager.event_data
+        }
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
+    
+    elif name == "get_dietary_requirements":
+        attendees = event_manager.event_data.get("attendees", [])
+        
+        # Extract dietary information
+        dietary_summary = {}
+        dietary_details = []
+        
+        for attendee in attendees:
+            dietary = attendee.get("dietary_restrictions", "none")
+            dietary_details.append({
+                "name": attendee.get("name"),
+                "company": attendee.get("company"),
+                "dietary_restrictions": dietary
+            })
+            
+            # Count dietary restrictions
+            if dietary in dietary_summary:
+                dietary_summary[dietary] += 1
+            else:
+                dietary_summary[dietary] = 1
+        
+        result = {
+            "total_attendees": len(attendees),
+            "dietary_summary": dietary_summary,
+            "detailed_requirements": dietary_details,
+            "catering_notes": "Consider offering vegetarian, gluten-free, and regular options based on attendee needs"
         }
         return [TextContent(type="text", text=json.dumps(result, indent=2))]
     

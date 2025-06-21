@@ -99,6 +99,16 @@ async def test_mcp_server():
             }
         },
         {
+            "name": "Get Dietary Requirements",
+            "tool": "get_dietary_requirements", 
+            "args": {},
+            "expect": {
+                "total_attendees": 3,
+                "dietary_summary.vegetarian": 1,
+                "dietary_summary.gluten-free": 1
+            }
+        },
+        {
             "name": "Manual Time Update",
             "tool": "update_event_time",
             "args": {
@@ -322,6 +332,34 @@ async def simulate_mcp_call(tool_name: str, args: dict) -> dict:
             "time": time,
             "end_time": end_time,
             "location": location
+        }
+    
+    elif tool_name == "get_dietary_requirements":
+        attendees = event_manager.event_data.get("attendees", [])
+        
+        # Extract dietary information
+        dietary_summary = {}
+        dietary_details = []
+        
+        for attendee in attendees:
+            dietary = attendee.get("dietary_restrictions", "none")
+            dietary_details.append({
+                "name": attendee.get("name"),
+                "company": attendee.get("company"),
+                "dietary_restrictions": dietary
+            })
+            
+            # Count dietary restrictions
+            if dietary in dietary_summary:
+                dietary_summary[dietary] += 1
+            else:
+                dietary_summary[dietary] = 1
+        
+        return {
+            "total_attendees": len(attendees),
+            "dietary_summary": dietary_summary,
+            "detailed_requirements": dietary_details,
+            "catering_notes": "Consider offering vegetarian, gluten-free, and regular options based on attendee needs"
         }
     
     else:
